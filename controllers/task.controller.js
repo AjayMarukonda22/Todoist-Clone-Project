@@ -1,32 +1,32 @@
 const Task = require('../models/task.model');
+const customError = require('../utils/customError');
 
-exports.createTask = async (req, res) => {
+exports.createTask = async (req, res, next) => {
     try {
     let task = await Task.createTask(req.body);
     return res.status(201).json(task);
     }
     catch(err) {
-     res.status(500).json({message : err.message});
+     next(err);
     }
 }
 
-exports.getAllTasks = async (req, res) => {
+exports.getAllTasks = async (req, res, next) => {
    try {
       let tasks = await Task.getAllTasks();
      return res.status(200).json(tasks);
    }
    catch(err){
-    res.status(500).json({message : err.message});
+    next(err);
    }
 }
 
-exports.getTaskById = async (req, res) => {
-     let id;
+exports.getTaskById = async (req, res, next) => {
     try {
-         id = req.params.id;
+       let id = req.params.id;
 
         if (isNaN(id)) {
-            return res.status(400).json({ error: "Invalid task ID. Must be a number." });
+            throw new customError("Invalid task ID. Must be a number." , 400);
         }
 
 
@@ -34,67 +34,52 @@ exports.getTaskById = async (req, res) => {
      return res.status(200).json(task);
     }
     catch(err) {
-        if(err.message === 'not found'){
-          return res.status(404).json({message : `Task with id of ${id} is not found`});
-        }
-        res.status(500).json({message : err.message});
+        next(err);
     }
 }
 
-exports.getTasksByProjectId = async (req, res) => {
-    let projectId;
+exports.getTasksByProjectId = async (req, res, next) => {
     try {
-     projectId = req.params.id;
+     let projectId = req.params.id;
 
         if (isNaN(projectId)) {
-            return res.status(400).json({ error: "Invalid project ID. Must be a number." });
+            throw new customError("Invalid task ID. Must be a number." , 400);
         }
 
         let tasks = await Task.getTasksByProjectId(projectId);
         return res.status(200).json(tasks);
     }
     catch(err) {
-        if(err.message === 'not found'){
-          return res.status(404).json({message : `Project with id of ${projectId} doesn't have any tasks`});
-        }
-        res.status(500).json({message : err.message});
+        next(err);
     }
 }
 
-exports.updateTaskById = async (req, res) => {
-    let id;
+exports.updateTaskById = async (req, res, next) => {
     try {
-         id = req.params.id;
+         let id = req.params.id;
         if(isNaN(id)) {
-            return res.status(400).json({error : "Invalid task ID. Must be a number." });
+            throw new customError("Invalid task ID. Must be a number." , 400);
         }
 
         let task = await Task.updateTaskById(id, req.body);
        return res.status(200).json(task);
     }
     catch(err) {
-        if(err.message === 'not found'){
-           return res.status(404).json({message : `Task with id of ${id} is not found`});
-        }
-        res.status(500).json({message : err.message});
+       next(err);
     }
 }
 
-exports.deleteTaskById = async (req, res) => {
-    let id;
+exports.deleteTaskById = async (req, res, next) => {
     try {
-         id = req.params.id;
+        let id = req.params.id;
         if(isNaN(id)) {
-            return res.status(400).json({error : "Invalid task ID. Must be a number." });
+            throw new customError("Invalid task ID. Must be a number." , 400);
         }
 
         let data = await Task.deleteTaskById(id);
        return res.status(200).json(data);
     }
     catch(err) {
-        if(err.message === 'not found'){
-          return  res.status(404).json({message : `Task with id of ${id} is not found`});
-        }
-        res.status(500).json({message : err.message});
+       next(err);
     }
 }

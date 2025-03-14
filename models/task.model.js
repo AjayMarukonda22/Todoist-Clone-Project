@@ -1,3 +1,4 @@
+const customError = require('../utils/customError');
 const pool = require('./db');
 
 class Task{
@@ -25,7 +26,7 @@ class Task{
         let query = `SELECT * FROM tasks WHERE id = ?`;
         let [rows] = await pool.query(query, [id]);
         if(rows.length === 0) {
-            throw new Error('not found');
+            throw new customError(`Task with id of ${id} is not found`, 404);
         }
         return rows[0];
     }
@@ -35,7 +36,7 @@ class Task{
          let query = `SELECT * FROM tasks WHERE project_id = ?`;
          let [rows] = await pool.query(query, [projectId]);
          if(rows.length === 0) {
-            throw new Error('not found');
+            throw new customError(`Project with id of ${projectId} doesn't have any tasks`, 404);
          }
          return rows;
     }
@@ -45,7 +46,7 @@ class Task{
         let query = `UPDATE tasks SET ? WHERE id = ?`;
         let [result] = await pool.query(query, [updatedTask, id]);
         if(result.affectedRows === 0) {
-            throw new Error('not found');
+            throw new customError(`Task with id of ${id} is not found`, 404);
         }
 
         let [rows] = await pool.query(`SELECT * FROM tasks WHERE id = ?`,[id]);
@@ -57,7 +58,7 @@ class Task{
         let query = `DELETE FROM tasks WHERE id = ?`;
         let [result] = await pool.query(query, [id]);
           if(result.affectedRows === 0) {
-            throw new Error('not found');
+            throw new customError(`Task with id of ${id} is not found`, 404);
           }
           return {message : `Task with id of ${id} is deleted successfully`};
     }

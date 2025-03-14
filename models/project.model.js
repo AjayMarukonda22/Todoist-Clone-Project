@@ -1,3 +1,4 @@
+const customError = require('../utils/customError');
 const pool = require('./db');
 
 class Project {
@@ -14,7 +15,7 @@ static async getProjectById(id) {
     let query = `SELECT * FROM projects WHERE id = ?`;
     let [rows] = await pool.query(query,[id]);
       if(rows.length === 0)
-        throw new Error("not found");
+        throw new customError(`Project with id of ${id} is not found`, 404);
        return rows[0];
 }
 
@@ -30,7 +31,7 @@ static async updateProjectById(id, updatedProject) {
     let query = `UPDATE projects SET ? WHERE id = ?`;
     let [result] = await pool.query(query, [updatedProject, id]);
     if(result.affectedRows === 0)
-        throw new Error("not found");
+        throw new customError(`Project with id of ${id} is not found`, 404);
     return {id, ...updatedProject};
 }
 
@@ -39,7 +40,7 @@ static async deleteProjectById(id) {
     let query = `DELETE FROM projects WHERE id = ?`;
     let [result] = await pool.query(query, [id]);
     if(result.affectedRows === 0) {
-        throw new Error("not found");
+        throw new customError(`Project with id of ${id} is not found`, 404);
     }
     return {message: `Project with id of ${id} is deleted successfully`};
 }

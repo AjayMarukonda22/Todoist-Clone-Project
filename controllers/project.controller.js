@@ -1,54 +1,50 @@
 const Project = require('../models/project.model');
+const customError = require('../utils/customError');
 
-exports.createProject = async (req, res) => {
+exports.createProject = async (req, res, next) => {
      try {
         let project = await Project.create(req.body);
         res.status(201).json(project);
      }
      catch(err) {
-       res.status(500).json({message : err.message});
+       next(err);
      }
 }
 
-exports.getProjectById = async (req, res) => {
-    let id;
+exports.getProjectById = async (req, res, next) => {
     try {
        
-         id = req.params.id;
+        let id = req.params.id;
 
         if (isNaN(id)) {
-            return res.status(400).json({ error: "Invalid project ID. Must be a number." });
+            throw new customError("Invalid project ID. Must be a number.", 400);
         }
 
         let project = await Project.getProjectById(id);
        return res.status(200).json(project);
     }
     catch(err) {
-        if(err.message === 'not found'){
-           return res.status(404).json({message : `Project with id of ${id} is not found`});
-        }
-        res.status(500).json({message : err.message});
+        next(err);
     }
 }
 
-exports.getAllProjects = async (req, res) => {
+exports.getAllProjects = async (req, res, next) => {
      try {
      let projects = await Project.getAllProjects();
     return res.status(200).json(projects);
      }
      catch(err) {
-        res.status(500).json({message : err.message});
+       next(err);
      }
 }
 
-exports.updateProjectById = async (req, res) => {
-    let id;
+exports.updateProjectById = async (req, res, next) => {
     try {
         
-      id = req.params.id;
+      let id = req.params.id;
 
         if (isNaN(id)) {
-            return res.status(400).json({ error: "Invalid project ID. Must be a number." });
+            throw new customError("Invalid project ID. Must be a number.", 400);
         }
 
 
@@ -56,29 +52,22 @@ exports.updateProjectById = async (req, res) => {
       return res.status(200).json(project);
     }
     catch(err) {
-        if(err.message === 'not found'){
-           return res.status(404).json({message : `Project with id of ${id} is not found`});
-        }
-        res.status(400).json({message : err.message});
+        next(err);
     }
 }
 
-exports.deleteProjectById = async (req, res) => {
-      let id;
+exports.deleteProjectById = async (req, res, next) => {
     try {
-         id = req.params.id;
+       let id = req.params.id;
 
         if (isNaN(id)) {
-            return res.status(400).json({ error: "Invalid project ID. Must be a number." });
+            throw new customError("Invalid project ID. Must be a number.", 400)
         }
 
         let data = await Project.deleteProjectById(id);
       return res.status(200).json(data);
     }
     catch(err) {
-        if(err.message === 'not found'){
-           return res.status(404).json({message : `Project with id of ${id} is not found`});
-        }
-        res.status(400).json({message : err.message});
+        next(err);
     }
 }
