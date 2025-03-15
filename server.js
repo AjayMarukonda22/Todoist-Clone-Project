@@ -1,26 +1,29 @@
 const express = require('express');
+const userRouter = require('./routes/user.routes');
 const projectRouter = require('./routes/project.routes');
-const taskRouter = require('./routes/task.routes');
+const todoRouter = require('./routes/todo.routes');
 const urlNotFoundErrorHandler = require('./middlewares/notFound');
 const GlobalErrorHandler = require('./middlewares/errorHandler');
-const errorHandler = require('./middlewares/errorHandler');
 const port = process.env.PORT || 8000;
 
 
 const app = express();
 app.use(express.json());
 
-//Project router
+//Users router
+app.use('/api/users', userRouter);
+
+//Projects router
 app.use('/api/projects', projectRouter);
 
-//Task router
-app.use('/api/tasks', taskRouter);
+//Tasks router
+app.use('/api/todos', todoRouter);
 
 //invalid route or url error handler
 app.use(urlNotFoundErrorHandler);
 
 //global error handler
-app.use(errorHandler);
+app.use(GlobalErrorHandler);
 
 
 
