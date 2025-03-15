@@ -15,7 +15,7 @@ async function insertUsers() {
        for(let i = 0 ; i < USERS_COUNT ; i++) {
             users.push([`user_${i}`, `user@${i}.com`]);
        }
-        
+
        let query = `INSERT INTO users (name, email) VALUES ?`;
        await connection.query(query, [users]);
 
@@ -82,6 +82,7 @@ async function insertTodos() {
 
         //due_date
         const futureDate = new Date();
+
         futureDate.setDate(futureDate.getDate() + 7);
         const formattedDate = futureDate.toISOString().split('T')[0];
 

@@ -49,9 +49,12 @@ const createTables = async () => {
         `CREATE TABLE IF NOT EXISTS comments(
         id INT PRIMARY KEY AUTO_INCREMENT,
         content TEXT NOT NULL,
-        entity_id INT NOT NULL,
-        entity_type ENUM('project', 'todo') NOT NULL,
-        posted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        project_id INT NULL,
+        todo_id INT NULL,
+        posted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT fk_project FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+        CONSTRAINT fk_todo FOREIGN KEY (todo_id) REFERENCES todos(id) ON DELETE CASCADE,
+        CHECK (project_id IS NOT NULL OR todo_id IS NOT NULL) 
         )`
       )
 
