@@ -20,9 +20,14 @@ static async getProjectById(id) {
 }
 
 //find all projects
-static async getAllProjects() {
-    let query = `SELECT * FROM projects`;
-    let [rows] = await pool.query(query);
+static async getAllProjects(paginationDetails) {
+    let query = `SELECT * FROM projects WHERE 1=1`;
+
+    let limit = paginationDetails.LIMIT || 100;
+    let offset = paginationDetails.OFFSET || 0;
+
+    query += ` LIMIT ? OFFSET ?`;
+    let [rows] = await pool.query(query, [limit, offset]);
     return rows;
 }
 

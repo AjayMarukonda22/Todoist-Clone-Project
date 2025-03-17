@@ -50,6 +50,34 @@ exports.getCommentById = async (req, res, next) => {
     }
 }
 
+exports.getCommentsByEntityId = async (req, res, next) => {
+    try {
+        let project_id = req.query.project_id;
+        let todo_id = req.query.todo_id;
+        console.log(req.query);
+
+        if (!project_id && !todo_id) {
+            throw new customError(`Either project_id or todo_id is required`, 400);
+        }
+    
+        if (project_id && todo_id) {
+            throw new customError(`Only one of project_id or todo_id is required`, 400);
+        }
+
+        if(project_id) {
+            let comments = await Comment.getCommentsByEntityId(project_id, 'project');
+            return res.status(200).json(comments);
+        }
+       else {
+        let comments = await Comment.getCommentsByEntityId(todo_id, 'todo');
+         return res.status(200).json(comments);
+       }
+    }
+    catch(err) {
+        next(err);
+    }
+}
+
 exports.updateCommentById = async (req, res, next) => {
     try {
         let id = req.params.id;

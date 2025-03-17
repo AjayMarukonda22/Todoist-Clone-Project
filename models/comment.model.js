@@ -34,6 +34,25 @@ class Comment {
          return rows[0];
     }
 
+    //get comments by based on entity i.e project or todo
+    static async getCommentsByEntityId(entityId, entityType) {
+              let query = `SELECT * FROM comments WHERE`;
+              if(entityType === 'project') {
+                query += ` project_id = ?`;
+              }
+
+              if(entityType === 'todo') {
+                query += ` todo_id = ?`
+              }
+
+              let [rows] = await pool.query(query, [entityId]);
+              if(rows.length === 0) {
+                throw new customError(`There are no comments associated with ${entityType} with id of ${entityId}`, 404);
+              }
+              return rows;
+
+    }
+
     //update a comment by id
     static async updateCommentById(id, updatedComment) {
         let query = `UPDATE comments SET ? WHERE id = ?`;

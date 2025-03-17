@@ -32,7 +32,9 @@ exports.getProjectById = async (req, res, next) => {
 
 exports.getAllProjects = async (req, res, next) => {
      try {
-     let projects = await Project.getAllProjects();
+
+        let paginationDetails = req.query;
+     let projects = await Project.getAllProjects(paginationDetails);
     return res.status(200).json(projects);
      }
      catch(err) {

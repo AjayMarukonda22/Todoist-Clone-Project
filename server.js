@@ -32,4 +32,3 @@ app.use(GlobalErrorHandler);
 
 
 app.listen(port, () => console.log(`Server is running on port: ${port}`));
-console.log(new Date().toISOString().split('T')[0] )
