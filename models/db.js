@@ -20,7 +20,17 @@ const createTables = async () => {
         `CREATE TABLE IF NOT EXISTS users(
         id INT PRIMARY KEY AUTO_INCREMENT,
         name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) UNIQUE NOT NULL
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL
+        )`
+      )
+      await connection.query(
+        `CREATE TABLE IF NOT EXISTS refresh_tokens(
+         id INT PRIMARY KEY AUTO_INCREMENT,
+         user_id INT NOT NULL,
+         token TEXT NOT NULL,
+         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )`
       )
       await connection.query(

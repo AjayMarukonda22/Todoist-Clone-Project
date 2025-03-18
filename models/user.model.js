@@ -12,6 +12,18 @@ class User {
         return {id : result.insertId, ...newUSer};
     }
 
+//get user by email
+static async getUserByEmail(email) {
+     let query = `SELECT * FROM users WHERE email = ?`;
+     let [result] = await pool.query(query, email);
+     if(result.length === 0) {
+        return null;
+     }
+     return result[0];
+    
+}
+
+
 //get a user by id
 
    static async getUserById(id) {
